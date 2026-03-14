@@ -48,19 +48,25 @@ function analyzeFood(imageBase64) {
   return new Promise((resolve, reject) => {
     let fullResponse = '';
 
+    console.log('开始生成鉴权URL...');
+    const authUrl = getAuthUrl();
+    console.log('鉴权URL:', authUrl);
+
     // 创建WebSocket连接
     const socketTask = wx.connectSocket({
-      url: getAuthUrl(),
+      url: authUrl,
       success: () => {
         console.log('WebSocket连接成功');
       },
       fail: (error) => {
-        reject(new Error('WebSocket连接失败: ' + error.errMsg));
+        console.error('WebSocket连接失败:', error);
+        reject(new Error('WebSocket连接失败: ' + JSON.stringify(error)));
       }
     });
 
     // 连接打开时发送请求
     socketTask.onOpen(() => {
+      console.log('WebSocket已打开，准备发送请求');
       const params = {
         header: {
           app_id: XFYUN_CONFIG.appId,
@@ -91,25 +97,30 @@ function analyzeFood(imageBase64) {
         }
       };
 
+      console.log('发送参数:', JSON.stringify(params).substring(0, 200) + '...');
+
       socketTask.send({
         data: JSON.stringify(params),
         success: () => {
           console.log('发送请求成功');
         },
         fail: (error) => {
-          reject(new Error('发送请求失败: ' + error.errMsg));
+          console.error('发送请求失败:', error);
+          reject(new Error('发送请求失败: ' + JSON.stringify(error)));
         }
       });
     });
 
     // 接收消息
     socketTask.onMessage((res) => {
+      console.log('收到消息:', res.data);
       try {
         const data = JSON.parse(res.data);
 
         if (data.header.code !== 0) {
+          console.error('API返回错误:', data.header);
           socketTask.close();
-          reject(new Error(`API错误: ${data.header.message}`));
+          reject(new Error(`API错误 [${data.header.code}]: ${data.header.message}`));
           return;
         }
 
@@ -118,11 +129,13 @@ function analyzeFood(imageBase64) {
           const text = data.payload.choices.text;
           if (text && text.length > 0) {
             fullResponse += text[0].content;
+            console.log('累积响应:', fullResponse);
           }
         }
 
         // 检查是否结束
         if (data.header.status === 2) {
+          console.log('接收完成，完整响应:', fullResponse);
           socketTask.close();
 
           // 解析JSON响应
@@ -130,15 +143,19 @@ function analyzeFood(imageBase64) {
             const jsonMatch = fullResponse.match(/\{[\s\S]*\}/);
             if (jsonMatch) {
               const foodInfo = JSON.parse(jsonMatch[0]);
+              console.log('解析成功:', foodInfo);
               resolve(foodInfo);
             } else {
+              console.error('无法提取JSON:', fullResponse);
               reject(new Error('无法解析AI返回的数据: ' + fullResponse));
             }
           } catch (error) {
+            console.error('JSON解析失败:', error);
             reject(new Error('解析JSON失败: ' + error.message));
           }
         }
       } catch (error) {
+        console.error('处理响应失败:', error);
         socketTask.close();
         reject(new Error('处理响应失败: ' + error.message));
       }
@@ -146,6 +163,7 @@ function analyzeFood(imageBase64) {
 
     // 错误处理
     socketTask.onError((error) => {
+      console.error('WebSocket错误:', error);
       reject(new Error('WebSocket错误: ' + JSON.stringify(error)));
     });
 
