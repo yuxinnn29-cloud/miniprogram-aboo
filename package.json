@@ -1,0 +1,13 @@
+{
+  "name": "fridge-food-tracker",
+  "version": "1.0.0",
+  "description": "冰箱食物追踪小程序",
+  "main": "app.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.6"
+  }
+}
