@@ -15,14 +15,14 @@ function analyzeFood(imageBase64) {
     }
 
     wx.request({
-      url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+      url: 'https://ark.cn-beijing.volces.com/api/coding/v1/chat/completions',
       method: 'POST',
       header: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json'
       },
       data: {
-        model: 'doubao-vision-pro',
+        model: 'ep-20250314152904-xqxzh',
         messages: [{
           role: 'user',
           content: [

@@ -18,6 +18,16 @@ App({
     } catch (e) {
       console.error('Failed to initialize alertDays:', e);
     }
+
+    // 初始化API Key（如果未设置）
+    try {
+      const apiKey = wx.getStorageSync('apiKey');
+      if (!apiKey) {
+        wx.setStorageSync('apiKey', 'd382db25-0b3d-4a12-8e46-3f80c3d9e358');
+      }
+    } catch (e) {
+      console.error('Failed to initialize apiKey:', e);
+    }
   },
 
   onShow() {
