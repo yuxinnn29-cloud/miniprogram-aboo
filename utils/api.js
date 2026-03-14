@@ -81,9 +81,9 @@ function analyzeFood(imageBase64) {
         },
         parameter: {
           chat: {
-            domain: 'image',
+            domain: 'image',  // v2.1版本使用'image'
             temperature: 0.5,
-            max_tokens: 1024
+            max_tokens: 2048
           }
         },
         payload: {
@@ -91,13 +91,13 @@ function analyzeFood(imageBase64) {
             text: [
               {
                 role: 'user',
-                content: '请识别这个食物，返回JSON格式：{"name": "食物名称", "expiryDays": 保质天数(数字), "storageAdvice": "存储建议", "nutrition": "营养信息", "category": "食物分类"}。只返回JSON，不要其他文字。',
-                content_type: 'text'
+                content: imageBase64,  // 纯base64，不需要data:image前缀
+                content_type: 'image'
               },
               {
                 role: 'user',
-                content: imageBase64,
-                content_type: 'image'
+                content: '请识别这个食物，返回JSON格式：{"name": "食物名称", "expiryDays": 保质天数(数字), "storageAdvice": "存储建议", "nutrition": "营养信息", "category": "食物分类"}。只返回JSON，不要其他文字。',
+                content_type: 'text'
               }
             ]
           }
