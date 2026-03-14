@@ -1,0 +1,9 @@
+<view class="container">
+  <view class="title">讯飞星火API连接测试</view>
+
+  <button type="primary" bindtap="testConnection">测试通用对话API</button>
+
+  <view class="result">
+    <text>{{result}}</text>
+  </view>
+</view>
