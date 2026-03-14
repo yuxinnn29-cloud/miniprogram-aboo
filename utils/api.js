@@ -10,9 +10,13 @@ const XFYUN_CONFIG = {
  * 生成讯飞星火API的鉴权URL
  */
 function getAuthUrl() {
-  const url = new URL(XFYUN_CONFIG.hostUrl);
-  const host = url.host;
-  const path = url.pathname;
+  // 手动解析URL（微信小程序不支持URL对象）
+  const urlStr = XFYUN_CONFIG.hostUrl;
+  const hostMatch = urlStr.match(/wss:\/\/([^\/]+)/);
+  const pathMatch = urlStr.match(/wss:\/\/[^\/]+(\/.*)/);
+
+  const host = hostMatch ? hostMatch[1] : '';
+  const path = pathMatch ? pathMatch[1] : '/';
   const date = new Date().toUTCString();
 
   // 构建签名原文
@@ -25,10 +29,14 @@ function getAuthUrl() {
 
   // 构建authorization
   const authorizationOrigin = `api_key="${XFYUN_CONFIG.apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
-  const authorization = Buffer.from(authorizationOrigin).toString('base64');
+
+  // 微信小程序不支持Buffer，使用base64编码
+  const authorization = wx.arrayBufferToBase64(
+    new Uint8Array(authorizationOrigin.split('').map(c => c.charCodeAt(0)))
+  );
 
   // 构建完整URL
-  return `${XFYUN_CONFIG.hostUrl}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
+  return `${XFYUN_CONFIG.hostUrl}?authorization=${encodeURIComponent(authorization)}&date=${encodeURIComponent(date)}&host=${encodeURIComponent(host)}`;
 }
 
 /**
