@@ -1,0 +1,67 @@
+.container {
+  padding: 20rpx;
+}
+
+.stats {
+  display: flex;
+  justify-content: space-around;
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-number {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #07c160;
+}
+
+.stat-number.warning {
+  color: #ff976a;
+}
+
+.stat-number.danger {
+  color: #ee0a24;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #969799;
+  margin-top: 8rpx;
+}
+
+.add-button {
+  margin-bottom: 20rpx;
+}
+
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #323233;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+  border-left: 6rpx solid #07c160;
+}
+
+.food-item {
+  margin-bottom: 16rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.food-item.expired {
+  opacity: 0.6;
+}

@@ -1,0 +1,76 @@
+<view class="container">
+  <!-- 拍照区域 -->
+  <view class="photo-section">
+    <view class="photo-container" wx:if="{{photo}}">
+      <image src="{{photo}}" mode="aspectFill" class="photo-preview" />
+      <van-button type="primary" size="small" round bindtap="chooseImage" class="retake-button">
+        重新拍照
+      </van-button>
+    </view>
+    <view class="photo-placeholder" wx:else bindtap="chooseImage">
+      <text class="placeholder-icon">📷</text>
+      <text class="placeholder-text">点击拍照或选择图片</text>
+    </view>
+  </view>
+
+  <!-- 识别中 -->
+  <view class="analyzing" wx:if="{{isAnalyzing}}">
+    <van-loading size="48rpx" type="spinner">识别中...</van-loading>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form-section" wx:if="{{photo && !isAnalyzing}}">
+    <van-cell-group>
+      <van-field
+        value="{{ name }}"
+        label="食物名称"
+        placeholder="请输入食物名称"
+        required
+        bind:change="onNameInput"
+      />
+      <van-field
+        value="{{ expiryDays }}"
+        label="保质期"
+        placeholder="请输入保质天数"
+        type="number"
+        required
+        bind:change="onExpiryDaysInput"
+      >
+        <view slot="button">天</view>
+      </van-field>
+      <van-field
+        value="{{ storageAdvice }}"
+        label="存储建议"
+        placeholder="如：冷藏保存"
+        bind:change="onStorageAdviceInput"
+      />
+      <van-field
+        value="{{ nutrition }}"
+        label="营养信息"
+        placeholder="如：富含维生素C"
+        type="textarea"
+        autosize
+        bind:change="onNutritionInput"
+      />
+      <van-field
+        value="{{ category }}"
+        label="分类"
+        placeholder="如：水果"
+        bind:change="onCategoryInput"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons" wx:if="{{photo && !isAnalyzing}}">
+    <van-button type="default" size="large" round bindtap="cancel">
+      取消
+    </van-button>
+    <van-button type="primary" size="large" round bindtap="saveFood">
+      保存
+    </van-button>
+  </view>
+</view>
+
+<van-toast id="van-toast" />
+<van-dialog id="van-dialog" />
