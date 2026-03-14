@@ -2,7 +2,7 @@
 const XFYUN_CONFIG = {
   appId: 'e25b0af8',
   apiKey: 'e983ca33eaa8d2f299061c4f53d0393d',
-  apiSecret: 'NTUxYTlkYTEzZjY3MGFhNDVjMDhkNzA0',
+  apiSecret: '551a9da13f670aa45c08d704',
   hostUrl: 'wss://spark-api.cn-huabei-1.xf-yun.com/v2.1/image'
 };
 
