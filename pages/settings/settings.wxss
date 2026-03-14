@@ -1,0 +1,18 @@
+.container {
+  padding: 20rpx;
+}
+
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  color: #969799;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+.save-button {
+  margin-top: 20rpx;
+}

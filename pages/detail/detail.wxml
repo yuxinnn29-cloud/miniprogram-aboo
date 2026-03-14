@@ -1,0 +1,94 @@
+<view class="container" wx:if="{{food}}">
+  <!-- 食物照片 -->
+  <view class="photo-section">
+    <image src="{{food.photo}}" mode="aspectFill" class="food-photo" />
+    <view class="status-badge status-{{status}}">
+      <van-tag type="{{status === 'expired' ? 'danger' : status === 'expiring' ? 'warning' : 'success'}}">
+        {{status === 'expired' ? '已过期' : status === 'expiring' ? '即将过期' : '正常'}}
+      </van-tag>
+    </view>
+  </view>
+
+  <!-- 剩余天数 -->
+  <view class="days-section">
+    <text class="days-label">剩余天数</text>
+    <text class="days-value {{status === 'expired' ? 'expired' : status === 'expiring' ? 'expiring' : ''}}">
+      {{daysRemaining > 0 ? daysRemaining : Math.abs(daysRemaining)}} 天
+    </text>
+    <text class="days-suffix">{{daysRemaining > 0 ? '' : '（已过期）'}}</text>
+  </view>
+
+  <!-- 详细信息 -->
+  <view class="info-section" wx:if="{{!isEditing}}">
+    <van-cell-group>
+      <van-cell title="食物名称" value="{{food.name}}" />
+      <van-cell title="添加日期" value="{{food.addDate}}" />
+      <van-cell title="过期日期" value="{{food.expiryDate}}" />
+      <van-cell title="存储建议" value="{{food.storageAdvice || '无'}}" />
+      <van-cell title="营养信息" value="{{food.nutrition || '无'}}" />
+      <van-cell title="分类" value="{{food.category || '无'}}" />
+    </van-cell-group>
+  </view>
+
+  <!-- 编辑表单 -->
+  <view class="edit-section" wx:if="{{isEditing}}">
+    <van-cell-group>
+      <van-field
+        value="{{ editName }}"
+        label="食物名称"
+        placeholder="请输入食物名称"
+        required
+        bind:change="onNameInput"
+      />
+      <van-field
+        value="{{ editExpiryDate }}"
+        label="过期日期"
+        placeholder="YYYY-MM-DD"
+        required
+        bind:change="onExpiryDateInput"
+      />
+      <van-field
+        value="{{ editStorageAdvice }}"
+        label="存储建议"
+        placeholder="如：冷藏保存"
+        bind:change="onStorageAdviceInput"
+      />
+      <van-field
+        value="{{ editNutrition }}"
+        label="营养信息"
+        placeholder="如：富含维生素C"
+        type="textarea"
+        autosize
+        bind:change="onNutritionInput"
+      />
+      <van-field
+        value="{{ editCategory }}"
+        label="分类"
+        placeholder="如：水果"
+        bind:change="onCategoryInput"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-buttons" wx:if="{{!isEditing}}">
+    <van-button type="primary" size="large" round bindtap="toggleEdit">
+      编辑
+    </van-button>
+    <van-button type="danger" size="large" round bindtap="confirmDelete">
+      删除
+    </van-button>
+  </view>
+
+  <!-- 编辑模式按钮 -->
+  <view class="action-buttons" wx:if="{{isEditing}}">
+    <van-button type="default" size="large" round bindtap="cancelEdit">
+      取消
+    </van-button>
+    <van-button type="primary" size="large" round bindtap="saveEdit">
+      保存
+    </van-button>
+  </view>
+</view>
+
+<van-dialog id="van-dialog" />
