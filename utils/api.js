@@ -10,42 +10,34 @@ const XFYUN_CONFIG = {
  * 生成讯飞星火API的鉴权URL
  */
 function getAuthUrl() {
-  // 手动解析URL（微信小程序不支持URL对象）
-  const urlStr = XFYUN_CONFIG.hostUrl;
-  const hostMatch = urlStr.match(/wss:\/\/([^\/]+)/);
-  const pathMatch = urlStr.match(/wss:\/\/[^\/]+(\/.*)/);
+  const crypto = require('crypto-js');
 
-  const host = hostMatch ? hostMatch[1] : '';
-  const path = pathMatch ? pathMatch[1] : '/';
+  // 解析URL
+  const url = XFYUN_CONFIG.hostUrl;
+  const host = 'spark-api.cn-huabei-1.xf-yun.com';
+  const path = '/v2.1/image';
+
+  // 生成RFC1123格式的时间戳
   const date = new Date().toUTCString();
 
-  console.log('Host:', host);
-  console.log('Path:', path);
-  console.log('Date:', date);
-
-  // 构建签名原文
+  // 拼接签名原始字符串
   const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
-  console.log('签名原文:', signatureOrigin);
 
-  // 使用HMAC-SHA256加密
-  const crypto = require('crypto-js');
-  const signatureSha = crypto.HmacSHA256(signatureOrigin, XFYUN_CONFIG.apiSecret);
-  const signature = crypto.enc.Base64.stringify(signatureSha);
-  console.log('Signature:', signature);
+  // 使用hmac-sha256算法结合apiSecret对signatureOrigin签名，获得签名后的摘要signature
+  const signature = crypto.enc.Base64.stringify(
+    crypto.HmacSHA256(signatureOrigin, XFYUN_CONFIG.apiSecret)
+  );
 
-  // 构建authorization原文
+  // 使用apiKey、signature、algorithm组成authorization
   const authorizationOrigin = `api_key="${XFYUN_CONFIG.apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
-  console.log('Authorization原文:', authorizationOrigin);
 
-  // 使用crypto-js进行base64编码
-  const authorization = crypto.enc.Base64.stringify(crypto.enc.Utf8.parse(authorizationOrigin));
-  console.log('Authorization Base64:', authorization);
+  // 将authorization进行base64编码
+  const authorization = crypto.enc.Base64.stringify(
+    crypto.enc.Utf8.parse(authorizationOrigin)
+  );
 
-  // 构建完整URL
-  const finalUrl = `${XFYUN_CONFIG.hostUrl}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
-  console.log('最终URL:', finalUrl);
-
-  return finalUrl;
+  // 将date和authorization拼接到请求地址后面
+  return `${url}?authorization=${authorization}&date=${date}&host=${host}`;
 }
 
 /**
