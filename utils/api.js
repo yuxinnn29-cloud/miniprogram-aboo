@@ -36,8 +36,13 @@ function getAuthUrl() {
     crypto.enc.Utf8.parse(authorizationOrigin)
   );
 
-  // 将date和authorization拼接到请求地址后面
-  return `${url}?authorization=${authorization}&date=${date}&host=${host}`;
+  // 手动拼接URL，避免微信小程序自动编码
+  // 注意：这里不使用模板字符串拼接参数，而是直接返回完整字符串
+  const authUrl = url + '?authorization=' + authorization + '&date=' + date + '&host=' + host;
+
+  console.log('生成的认证URL:', authUrl);
+
+  return authUrl;
 }
 
 /**
@@ -56,18 +61,22 @@ function analyzeFood(imageBase64) {
     // 创建WebSocket连接
     const socketTask = wx.connectSocket({
       url: authUrl,
+      header: {
+        'content-type': 'application/json'
+      },
+      protocols: [],
       success: () => {
-        console.log('WebSocket连接成功');
+        console.log('connectSocket调用成功');
       },
       fail: (error) => {
-        console.error('WebSocket连接失败:', error);
+        console.error('connectSocket调用失败:', error);
         reject(new Error('WebSocket连接失败: ' + JSON.stringify(error)));
       }
     });
 
-    // 连接打开时发送请求
+    // 监听连接打开
     socketTask.onOpen(() => {
-      console.log('WebSocket已打开，准备发送请求');
+      console.log('WebSocket连接已打开');
       const params = {
         header: {
           app_id: XFYUN_CONFIG.appId,
@@ -98,15 +107,15 @@ function analyzeFood(imageBase64) {
         }
       };
 
-      console.log('发送参数:', JSON.stringify(params).substring(0, 200) + '...');
+      console.log('准备发送数据...');
 
       socketTask.send({
         data: JSON.stringify(params),
         success: () => {
-          console.log('发送请求成功');
+          console.log('数据发送成功');
         },
         fail: (error) => {
-          console.error('发送请求失败:', error);
+          console.error('数据发送失败:', error);
           reject(new Error('发送请求失败: ' + JSON.stringify(error)));
         }
       });
@@ -169,8 +178,8 @@ function analyzeFood(imageBase64) {
     });
 
     // 连接关闭
-    socketTask.onClose(() => {
-      console.log('WebSocket连接已关闭');
+    socketTask.onClose((res) => {
+      console.log('WebSocket连接已关闭, code:', res.code, 'reason:', res.reason);
     });
   });
 }
