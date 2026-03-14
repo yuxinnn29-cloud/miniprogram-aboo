@@ -12,39 +12,34 @@ const XFYUN_CONFIG = {
 function getAuthUrl() {
   const crypto = require('crypto-js');
 
-  // 解析URL
-  const url = XFYUN_CONFIG.hostUrl;
   const host = 'spark-api.cn-huabei-1.xf-yun.com';
   const path = '/v2.1/image';
+  const date = new Date().toGMTString(); // 使用toGMTString而不是toUTCString
 
-  // 生成RFC1123格式的时间戳
-  const date = new Date().toUTCString();
+  console.log('Date:', date);
 
-  // 拼接签名原始字符串（注意：签名时使用原始的date，不编码）
+  // 构建签名原文
   const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
+  console.log('签名原文:', signatureOrigin);
 
-  // 使用hmac-sha256算法结合apiSecret对signatureOrigin签名，获得签名后的摘要signature
-  const signature = crypto.enc.Base64.stringify(
-    crypto.HmacSHA256(signatureOrigin, XFYUN_CONFIG.apiSecret)
-  );
+  // 使用HMAC-SHA256加密
+  const signatureSha = crypto.HmacSHA256(signatureOrigin, XFYUN_CONFIG.apiSecret);
+  const signature = crypto.enc.Base64.stringify(signatureSha);
+  console.log('Signature:', signature);
 
-  // 使用apiKey、signature、algorithm组成authorization
+  // 构建authorization原文
   const authorizationOrigin = `api_key="${XFYUN_CONFIG.apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
+  console.log('Authorization原文:', authorizationOrigin);
 
-  // 将authorization进行base64编码
-  const authorization = crypto.enc.Base64.stringify(
-    crypto.enc.Utf8.parse(authorizationOrigin)
-  );
+  // Base64编码authorization
+  const authorizationBase64 = crypto.enc.Base64.stringify(crypto.enc.Utf8.parse(authorizationOrigin));
+  console.log('Authorization Base64:', authorizationBase64);
 
-  // 对date进行URL编码（因为微信小程序会自动编码，我们需要确保编码正确）
-  const encodedDate = encodeURIComponent(date);
+  // 构建最终URL - 不对任何参数进行encodeURIComponent
+  const finalUrl = `wss://${host}${path}?authorization=${authorizationBase64}&date=${date}&host=${host}`;
+  console.log('最终URL:', finalUrl);
 
-  // 构建完整URL
-  const authUrl = `${url}?authorization=${authorization}&date=${encodedDate}&host=${host}`;
-
-  console.log('生成的认证URL:', authUrl);
-
-  return authUrl;
+  return finalUrl;
 }
 
 /**
