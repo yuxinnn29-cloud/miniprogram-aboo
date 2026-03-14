@@ -20,7 +20,7 @@ function getAuthUrl() {
   // 生成RFC1123格式的时间戳
   const date = new Date().toUTCString();
 
-  // 拼接签名原始字符串
+  // 拼接签名原始字符串（注意：签名时使用原始的date，不编码）
   const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
 
   // 使用hmac-sha256算法结合apiSecret对signatureOrigin签名，获得签名后的摘要signature
@@ -36,9 +36,11 @@ function getAuthUrl() {
     crypto.enc.Utf8.parse(authorizationOrigin)
   );
 
-  // 手动拼接URL，避免微信小程序自动编码
-  // 注意：这里不使用模板字符串拼接参数，而是直接返回完整字符串
-  const authUrl = url + '?authorization=' + authorization + '&date=' + date + '&host=' + host;
+  // 对date进行URL编码（因为微信小程序会自动编码，我们需要确保编码正确）
+  const encodedDate = encodeURIComponent(date);
+
+  // 构建完整URL
+  const authUrl = `${url}?authorization=${authorization}&date=${encodedDate}&host=${host}`;
 
   console.log('生成的认证URL:', authUrl);
 
