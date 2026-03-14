@@ -118,7 +118,7 @@ Page({
       return;
     }
 
-    if (!expiryDays || isNaN(expiryDays) || expiryDays <= 0) {
+    if (!expiryDays || isNaN(expiryDays) || parseInt(expiryDays) <= 0) {
       wx.showToast({
         title: '请输入有效的保质天数',
         icon: 'none'

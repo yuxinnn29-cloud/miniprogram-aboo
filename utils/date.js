@@ -55,12 +55,13 @@ function calculateExpiryDate(days) {
 /**
  * 获取食物状态
  * @param {number} daysRemaining - 剩余天数
+ * @param {number} alertDays - 提醒天数阈值（默认3天）
  * @returns {string} 状态: normal/expiring/expired
  */
-function getFoodStatus(daysRemaining) {
+function getFoodStatus(daysRemaining, alertDays = 3) {
   if (daysRemaining <= 0) {
     return 'expired';
-  } else if (daysRemaining <= 3) {
+  } else if (daysRemaining <= alertDays) {
     return 'expiring';
   } else {
     return 'normal';

@@ -1,4 +1,4 @@
-const { getFoodList } = require('../../utils/storage');
+const { getFoodList, getAlertDays } = require('../../utils/storage');
 const { calculateDaysRemaining, getFoodStatus } = require('../../utils/date');
 
 Page({
@@ -19,11 +19,12 @@ Page({
 
   loadFoodList() {
     const foodList = getFoodList();
+    const alertDays = getAlertDays();
 
     // 计算每个食物的剩余天数和状态
     const processedList = foodList.map(food => {
       const daysRemaining = calculateDaysRemaining(food.expiryDate);
-      const status = getFoodStatus(daysRemaining);
+      const status = getFoodStatus(daysRemaining, alertDays);
       return {
         ...food,
         daysRemaining,
