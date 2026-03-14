@@ -28,6 +28,7 @@
       }
     ]
   },
+  "cloud": true,
   "usingComponents": {
     "van-button": "@vant/weapp/button/index",
     "van-card": "@vant/weapp/card/index",

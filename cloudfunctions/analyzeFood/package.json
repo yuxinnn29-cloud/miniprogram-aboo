@@ -1,0 +1,9 @@
+{
+  "name": "analyzeFood",
+  "version": "1.0.0",
+  "description": "调用讯飞星火API分析食物图片",
+  "main": "index.js",
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}
