@@ -1,6 +1,7 @@
 const { getFoodById, updateFood, deleteFood } = require('../../utils/storage');
 const { calculateDaysRemaining, getFoodStatus, formatDate } = require('../../utils/date');
 const { deleteLocalImage } = require('../../utils/image');
+const { getAlertDays } = require('../../utils/storage');
 
 Page({
   data: {
@@ -42,7 +43,8 @@ Page({
     }
 
     const daysRemaining = calculateDaysRemaining(food.expiryDate);
-    const status = getFoodStatus(daysRemaining);
+    const alertDays = getAlertDays();
+    const status = getFoodStatus(daysRemaining, alertDays);
 
     this.setData({
       food,
@@ -101,6 +103,26 @@ Page({
       return;
     }
 
+    // 验证日期格式 YYYY-MM-DD
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(editExpiryDate)) {
+      wx.showToast({
+        title: '日期格式错误，请使用 YYYY-MM-DD',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 验证日期是否有效
+    const testDate = new Date(editExpiryDate);
+    if (isNaN(testDate.getTime())) {
+      wx.showToast({
+        title: '无效的日期',
+        icon: 'none'
+      });
+      return;
+    }
+
     const success = updateFood(id, {
       name: editName,
       expiryDate: editExpiryDate,
@@ -144,13 +166,13 @@ Page({
       confirmColor: '#ee0a24',
       success: (res) => {
         if (res.confirm) {
-          this.deleteFood();
+          this.handleDeleteFood();
         }
       }
     });
   },
 
-  async deleteFood() {
+  async handleDeleteFood() {
     const { id, food } = this.data;
 
     try {
@@ -159,7 +181,7 @@ Page({
         await deleteLocalImage(food.photo);
       }
     } catch (error) {
-      console.warn('删除图片失败:', error);
+      console.error('删除图片失败:', error);
     }
 
     // 删除食物记录
