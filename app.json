@@ -1,0 +1,37 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/add/add",
+    "pages/detail/detail",
+    "pages/settings/settings"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "冰箱食物管理",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "iconPath": "images/settings.png",
+        "selectedIconPath": "images/settings-active.png",
+        "text": "设置"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
