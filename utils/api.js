@@ -19,24 +19,33 @@ function getAuthUrl() {
   const path = pathMatch ? pathMatch[1] : '/';
   const date = new Date().toUTCString();
 
+  console.log('Host:', host);
+  console.log('Path:', path);
+  console.log('Date:', date);
+
   // 构建签名原文
   const signatureOrigin = `host: ${host}\ndate: ${date}\nGET ${path} HTTP/1.1`;
+  console.log('签名原文:', signatureOrigin);
 
   // 使用HMAC-SHA256加密
   const crypto = require('crypto-js');
   const signatureSha = crypto.HmacSHA256(signatureOrigin, XFYUN_CONFIG.apiSecret);
   const signature = crypto.enc.Base64.stringify(signatureSha);
+  console.log('Signature:', signature);
 
-  // 构建authorization
+  // 构建authorization原文
   const authorizationOrigin = `api_key="${XFYUN_CONFIG.apiKey}", algorithm="hmac-sha256", headers="host date request-line", signature="${signature}"`;
+  console.log('Authorization原文:', authorizationOrigin);
 
-  // 微信小程序不支持Buffer，使用base64编码
-  const authorization = wx.arrayBufferToBase64(
-    new Uint8Array(authorizationOrigin.split('').map(c => c.charCodeAt(0)))
-  );
+  // 使用crypto-js进行base64编码
+  const authorization = crypto.enc.Base64.stringify(crypto.enc.Utf8.parse(authorizationOrigin));
+  console.log('Authorization Base64:', authorization);
 
   // 构建完整URL
-  return `${XFYUN_CONFIG.hostUrl}?authorization=${encodeURIComponent(authorization)}&date=${encodeURIComponent(date)}&host=${encodeURIComponent(host)}`;
+  const finalUrl = `${XFYUN_CONFIG.hostUrl}?authorization=${authorization}&date=${encodeURIComponent(date)}&host=${host}`;
+  console.log('最终URL:', finalUrl);
+
+  return finalUrl;
 }
 
 /**
