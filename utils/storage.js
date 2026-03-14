@@ -3,7 +3,12 @@
  * @returns {Array} 食物列表
  */
 function getFoodList() {
-  return wx.getStorageSync('foodList') || [];
+  try {
+    return wx.getStorageSync('foodList') || [];
+  } catch (error) {
+    console.error('获取食物列表失败:', error);
+    return [];
+  }
 }
 
 /**
@@ -11,7 +16,12 @@ function getFoodList() {
  * @param {Array} foodList - 食物列表
  */
 function saveFoodList(foodList) {
-  wx.setStorageSync('foodList', foodList);
+  try {
+    wx.setStorageSync('foodList', foodList);
+  } catch (error) {
+    console.error('保存食物列表失败:', error);
+    throw error;
+  }
 }
 
 /**
@@ -28,6 +38,7 @@ function addFood(food) {
  * 更新食物
  * @param {string} id - 食物ID
  * @param {Object} updatedFood - 更新的食物对象
+ * @returns {boolean} 是否更新成功
  */
 function updateFood(id, updatedFood) {
   const foodList = getFoodList();
@@ -35,17 +46,25 @@ function updateFood(id, updatedFood) {
   if (index !== -1) {
     foodList[index] = { ...foodList[index], ...updatedFood };
     saveFoodList(foodList);
+    return true;
   }
+  return false;
 }
 
 /**
  * 删除食物
  * @param {string} id - 食物ID
+ * @returns {boolean} 是否删除成功
  */
 function deleteFood(id) {
   const foodList = getFoodList();
+  const originalLength = foodList.length;
   const newList = foodList.filter(food => food.id !== id);
-  saveFoodList(newList);
+  if (newList.length < originalLength) {
+    saveFoodList(newList);
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -63,7 +82,12 @@ function getFoodById(id) {
  * @returns {number} 提醒天数
  */
 function getAlertDays() {
-  return wx.getStorageSync('alertDays') || 3;
+  try {
+    return wx.getStorageSync('alertDays') || 3;
+  } catch (error) {
+    console.error('获取提醒天数失败:', error);
+    return 3;
+  }
 }
 
 /**
@@ -71,7 +95,12 @@ function getAlertDays() {
  * @param {number} days - 提醒天数
  */
 function saveAlertDays(days) {
-  wx.setStorageSync('alertDays', days);
+  try {
+    wx.setStorageSync('alertDays', days);
+  } catch (error) {
+    console.error('保存提醒天数失败:', error);
+    throw error;
+  }
 }
 
 /**
@@ -79,7 +108,12 @@ function saveAlertDays(days) {
  * @returns {string} API Key
  */
 function getApiKey() {
-  return wx.getStorageSync('apiKey') || '';
+  try {
+    return wx.getStorageSync('apiKey') || '';
+  } catch (error) {
+    console.error('获取API Key失败:', error);
+    return '';
+  }
 }
 
 /**
@@ -87,7 +121,12 @@ function getApiKey() {
  * @param {string} key - API Key
  */
 function saveApiKey(key) {
-  wx.setStorageSync('apiKey', key);
+  try {
+    wx.setStorageSync('apiKey', key);
+  } catch (error) {
+    console.error('保存API Key失败:', error);
+    throw error;
+  }
 }
 
 module.exports = {

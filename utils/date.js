@@ -4,10 +4,23 @@
  * @returns {number} 剩余天数
  */
 function calculateDaysRemaining(expiryDate) {
+  // 验证日期格式
+  if (!expiryDate || typeof expiryDate !== 'string') {
+    console.error('无效的过期日期:', expiryDate);
+    return 0;
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   const expiry = new Date(expiryDate);
+
+  // 检查日期是否有效
+  if (isNaN(expiry.getTime())) {
+    console.error('无法解析过期日期:', expiryDate);
+    return 0;
+  }
+
   expiry.setHours(0, 0, 0, 0);
 
   const diffTime = expiry - today;

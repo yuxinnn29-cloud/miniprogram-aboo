@@ -61,7 +61,15 @@ function deleteLocalImage(filePath) {
     wx.getFileSystemManager().unlink({
       filePath: filePath,
       success: resolve,
-      fail: reject
+      fail: (error) => {
+        // 文件不存在时不视为错误
+        if (error.errMsg && error.errMsg.includes('no such file')) {
+          console.warn('文件不存在，无需删除:', filePath);
+          resolve();
+        } else {
+          reject(error);
+        }
+      }
     });
   });
 }
