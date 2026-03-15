@@ -5,13 +5,19 @@
  */
 function compressImage(filePath) {
   return new Promise((resolve, reject) => {
+    console.log('开始压缩图片:', filePath);
+
     wx.compressImage({
       src: filePath,
       quality: 80,
       success: (res) => {
+        console.log('图片压缩成功:', res.tempFilePath);
         resolve(res.tempFilePath);
       },
-      fail: reject
+      fail: (error) => {
+        console.error('图片压缩失败:', error);
+        reject(error);
+      }
     });
   });
 }
@@ -23,13 +29,19 @@ function compressImage(filePath) {
  */
 function imageToBase64(filePath) {
   return new Promise((resolve, reject) => {
+    console.log('开始转换图片为base64:', filePath);
+
     wx.getFileSystemManager().readFile({
       filePath: filePath,
       encoding: 'base64',
       success: (res) => {
+        console.log('图片转换为base64成功');
         resolve(res.data);
       },
-      fail: reject
+      fail: (error) => {
+        console.error('图片转换为base64失败:', error);
+        reject(error);
+      }
     });
   });
 }

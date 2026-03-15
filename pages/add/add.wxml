@@ -10,6 +10,7 @@
     <view class="photo-placeholder" wx:else bindtap="chooseImage">
       <text class="placeholder-icon">📷</text>
       <text class="placeholder-text">点击拍照或选择图片</text>
+      <text class="format-hint">支持: JPG、PNG、WebP、GIF、BMP、HEIC</text>
     </view>
   </view>
 

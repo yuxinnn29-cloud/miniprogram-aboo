@@ -1,7 +1,35 @@
 <view class="container">
-  <view class="title">讯飞星火API连接测试</view>
+  <view class="title">火山引擎 Ark API 测试</view>
 
-  <button type="primary" bindtap="testConnection">测试通用对话API</button>
+  <van-cell-group>
+    <van-field
+      label="模型"
+      value="{{model}}"
+      placeholder="请输入模型名称"
+      bind:change="onModelChange"
+    />
+    <van-field
+      label="图片"
+      value="{{imageName}}"
+      placeholder="请选择图片"
+      readonly="{{true}}"
+      bindtap="chooseImage"
+      is-link="{{true}}"
+    />
+    <van-field
+      label="消息"
+      value="{{message}}"
+      placeholder="请输入消息内容"
+      bind:change="onMessageChange"
+    />
+  </van-cell-group>
+
+  <view class="image-preview" wx:if="{{imagePath}}">
+    <image src="{{imagePath}}" mode="aspectFit" />
+    <button bindtap="removeImage">移除图片</button>
+  </view>
+
+  <button type="primary" bindtap="testArkAPI" disabled="{{!imagePath}}">测试食物识别 API</button>
 
   <view class="result">
     <text>{{result}}</text>

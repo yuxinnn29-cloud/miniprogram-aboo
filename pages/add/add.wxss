@@ -47,6 +47,12 @@
   color: #969799;
 }
 
+.format-hint {
+  font-size: 24rpx;
+  color: #b0b2b5;
+  margin-top: 16rpx;
+}
+
 .analyzing {
   display: flex;
   justify-content: center;

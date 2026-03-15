@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(cd:*)",
-      "WebFetch(domain:www.xfyun.cn)"
+      "WebFetch(domain:www.xfyun.cn)",
+      "Bash(git add:*)"
     ]
   }
 }
